@@ -144,6 +144,7 @@ async function loadQuakes({ silent } = {}) {
 
   if (cached && (silent || cacheFresh)) {
     render(cached.payload);
+    setLoading(false);
     if (cacheFresh) return;
   }
 

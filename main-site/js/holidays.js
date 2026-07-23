@@ -97,6 +97,7 @@ async function loadYear(year, { silent } = {}) {
 
   if (cached && (silent || cacheFresh)) {
     renderList(cached.payload.data);
+    document.getElementById("skeleton").style.display = "none";
     if (cacheFresh) return;
   }
 

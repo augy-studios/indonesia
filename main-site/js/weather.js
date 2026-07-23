@@ -187,6 +187,7 @@ async function loadForecast(adm4, { silent } = {}) {
 
   if (cached && (silent || cacheFresh)) {
     renderFromPayload(cached.payload);
+    setLoading(false);
     if (cacheFresh) return;
   }
 

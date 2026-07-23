@@ -126,6 +126,7 @@ async function loadTicker(pair, { silent } = {}) {
 
   if (cached && (silent || cacheFresh)) {
     renderTicker(pair, cached.payload.ticker);
+    setLoading(false);
     if (cacheFresh) return;
   }
 

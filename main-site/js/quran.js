@@ -90,6 +90,7 @@ async function loadList() {
   if (cached) {
     surahList = cached;
     renderSurahGrid("");
+    document.getElementById("list-skeleton").style.display = "none";
   } else {
     document.getElementById("list-skeleton").style.display = "flex";
   }
@@ -200,6 +201,7 @@ async function openSurah(nomor) {
   const cached = readCache(cacheKey);
   if (cached) {
     renderDetail(cached);
+    document.getElementById("detail-skeleton").style.display = "none";
   } else {
     document.getElementById("detail-skeleton").style.display = "flex";
   }
