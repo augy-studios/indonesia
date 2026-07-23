@@ -14,32 +14,26 @@
 
         gtag('config', 'G-FMCYFTFPEL');
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9715826188316382"
-        crossorigin="anonymous"></script>
 
     <link rel="manifest" href="/manifest.json" />
 
     <meta charset="utf-8">
-    <title>Indonesia Bisa | UwU Apps</title>
+    <title>Crypto Ticker (IDR) | Indonesia Bisa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Can is can, but in Indonesia! A directory of small, free Indonesia-focused tools.">
+    <meta name="description" content="Live rupiah-denominated crypto prices from Indodax's public ticker API.">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Indonesia Bisa | UwU Apps" />
+    <meta property="og:title" content="Crypto Ticker (IDR) | Indonesia Bisa" />
     <meta property="og:site_name" content="UwU Apps" />
-    <meta property="og:description" content="Can is can, but in Indonesia!" />
+    <meta property="og:description" content="Live rupiah-denominated crypto prices from Indodax's public ticker API." />
 
     <link rel="stylesheet" href="/css/theme.css">
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/crypto.css">
     <meta name="theme-color" content="#ccffcc" />
 
-    <!-- Embed Image -->
     <link rel="apple-touch-icon" href="/IDB-main.png">
     <link rel="icon" href="/favicon.ico">
     <link rel="shortcut icon" href="/favicon.ico">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:image:src" content="/IDB-main.png">
-    <meta property="og:image" content="/IDB-main.png" />
 </head>
 
 <body>
@@ -62,30 +56,52 @@
     </header>
 
     <main>
-        <section class="hero">
-            <h1>Indonesia Bisa</h1>
-            <p>A small directory of free, Indonesia-focused tools and data.</p>
-        </section>
-
-        <div class="search-wrap glass">
-            <span id="icon-search"></span>
-            <input type="search" id="page-search" placeholder="Search pages…" aria-label="Search pages"
-                autocomplete="off">
+        <div class="page-head">
+            <h1><span id="icon-crypto"></span> Crypto Ticker (IDR)</h1>
+            <p>Live rupiah-denominated crypto prices, from Indodax's public ticker API.</p>
         </div>
 
-        <div class="page-grid" id="page-grid"></div>
-
-        <div class="no-results" id="no-results">
-            <span id="icon-inbox"></span>
-            <p>No pages match your search.</p>
+        <div class="controls glass">
+            <form id="pair-form">
+                <input type="text" id="pair-input" placeholder="pair, e.g. btcidr" aria-label="Trading pair"
+                    autocomplete="off">
+                <button type="submit" class="btn"><span id="icon-search"></span> Get price</button>
+            </form>
+            <button type="button" class="btn" id="refresh-btn"><span id="icon-refresh"></span> Refresh</button>
         </div>
+
+        <div class="preset-row" id="preset-row"></div>
+
+        <div class="banner error" id="error-banner" role="alert">
+            <span id="icon-alert"></span>
+            <span id="error-text"></span>
+            <button type="button" class="btn" id="retry-btn"><span id="icon-refresh-2"></span> Retry</button>
+        </div>
+
+        <div class="banner warn" id="stale-banner" role="status">
+            <span id="icon-wifioff"></span>
+            <span>Showing the last saved price - couldn't reach Indodax just now.</span>
+        </div>
+
+        <div class="skeleton glass" id="skeleton">
+            <div class="skel-bar" style="width:40%"></div>
+            <div class="skel-bar" style="width:70%"></div>
+            <div class="skel-bar" style="width:55%"></div>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+            <span id="icon-empty"></span>
+            <p>No ticker data is available for this pair. Try another one, like <code>ethidr</code>.</p>
+        </div>
+
+        <section class="ticker-card glass" id="ticker-card"></section>
     </main>
 
     <footer class="footer">
-        Indonesia Bisa is an independent project, not affiliated with BMKG or the Indonesian government.
+        Price data courtesy of <a href="https://indodax.com/" target="_blank" rel="noopener noreferrer">Indodax</a>.
+        Indonesia Bisa is an independent project and is not affiliated with Indodax. Not financial advice.
     </footer>
 
-    <!-- Theme picker modal -->
     <div class="modal-overlay" id="theme-modal" hidden role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
         <div class="modal glass">
             <div class="modal-head">
@@ -100,7 +116,7 @@
 
     <script src="/js/icons.js"></script>
     <script src="/js/theme.js"></script>
-    <script src="/js/index.js"></script>
+    <script src="/js/crypto.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {

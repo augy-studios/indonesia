@@ -1,28 +1,61 @@
-const CACHE = "template-v1";
+const SHELL_CACHE = "idb-shell-v3";
+const API_CACHE = "idb-api-v3";
+const CACHES = [SHELL_CACHE, API_CACHE];
 
-const ASSETS = [
+const SHELL_ASSETS = [
   "/",
   "/index.html",
-  "/style.css",
-  "/script.js",
+  "/weather/",
+  "/weather/index.html",
+  "/quake/",
+  "/quake/index.html",
+  "/crypto/",
+  "/crypto/index.html",
+  "/emsifa/",
+  "/emsifa/index.html",
+  "/kodepos/",
+  "/kodepos/index.html",
+  "/holidays/",
+  "/holidays/index.html",
+  "/quran/",
+  "/quran/index.html",
+  "/css/theme.css",
+  "/css/index.css",
+  "/css/weather.css",
+  "/css/quake.css",
+  "/css/crypto.css",
+  "/css/emsifa.css",
+  "/css/kodepos.css",
+  "/css/holidays.css",
+  "/css/quran.css",
+  "/js/icons.js",
+  "/js/theme.js",
+  "/js/index.js",
+  "/js/weather.js",
+  "/js/quake.js",
+  "/js/crypto.js",
+  "/js/emsifa.js",
+  "/js/kodepos.js",
+  "/js/holidays.js",
+  "/js/quran.js",
+  "/manifest.json",
+  "/favicon.ico",
   "/IDB-main.png",
   "/IDB-192.png",
-  "/IDB-512.png",
-  "/favicon.ico",
-  "/manifest.json"
+  "/IDB-512.png"
 ];
 
-/* -- Install: cache shell -- */
+/* -- Install: cache the app shell -- */
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE)
-    .then(cache => cache.addAll(ASSETS))
+    caches.open(SHELL_CACHE)
+    .then(cache => cache.addAll(SHELL_ASSETS))
     .then(() => self.skipWaiting())
   );
 });
 
-/* -- Activate: clean old caches -- */
+/* -- Activate: drop old cache versions -- */
 
 self.addEventListener('activate', event => {
   event.waitUntil(
@@ -30,7 +63,7 @@ self.addEventListener('activate', event => {
     .then(keys =>
       Promise.all(
         keys
-        .filter(k => k !== CACHE)
+        .filter(k => !CACHES.includes(k))
         .map(k => caches.delete(k))
       )
     )
@@ -41,14 +74,17 @@ self.addEventListener('activate', event => {
 /* -- Fetch: strategy per route -- */
 
 self.addEventListener('fetch', event => {
-  const {
-    request
-  } = event;
-  const url = new URL(request.url);
+  const { request } = event;
+  if (request.method !== 'GET') return;
 
-  // API - network-first
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(networkFirst(request));
+  const url = new URL(request.url);
+  const sameOrigin = url.origin === self.location.origin;
+
+  // Our serverless API - stale-while-revalidate, so once a request has been
+  // made once it keeps working offline, and refreshes quietly whenever a
+  // connection is available.
+  if (sameOrigin && url.pathname.startsWith('/api/')) {
+    event.respondWith(staleWhileRevalidate(request));
     return;
   }
 
@@ -58,29 +94,45 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // static assets - cache-first
-  event.respondWith(cacheFirst(request));
+  // Everything else on our own origin (shell HTML/CSS/JS/images) - cache-first
+  if (sameOrigin) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
+  // Other cross-origin requests (e.g. Quran recitation audio) are left to
+  // the network as usual and are not cached.
 });
 
 /* -- Strategies -- */
 
-async function networkFirst(request) {
-  try {
-    const response = await fetch(request);
-    return response;
-  } catch {
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: 'You appear to be offline.'
-      }), {
-        status: 503,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }
-    );
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(API_CACHE);
+  const cached = await cache.match(request);
+
+  const networkFetch = fetch(request)
+    .then(response => {
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) {
+    // Refresh in the background; don't let the caller wait on it, and
+    // don't let a network failure surface as an unhandled rejection.
+    networkFetch.catch(() => {});
+    return cached;
   }
+
+  const fresh = await networkFetch;
+  if (fresh) return fresh;
+
+  return new Response(
+    JSON.stringify({ success: false, error: 'Offline, and no cached data is available yet for this request.' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 }
 
 async function cacheFirst(request) {
@@ -90,17 +142,14 @@ async function cacheFirst(request) {
   try {
     const response = await fetch(request);
     if (response.ok) {
-      const cache = await caches.open(CACHE);
+      const cache = await caches.open(SHELL_CACHE);
       cache.put(request, response.clone());
     }
     return response;
   } catch {
-    // offline - fallback for navigation
     if (request.mode === 'navigate') {
       return caches.match('/index.html');
     }
-    return new Response('Offline', {
-      status: 503
-    });
+    return new Response('Offline', { status: 503 });
   }
 }

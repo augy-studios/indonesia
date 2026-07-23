@@ -1,0 +1,21 @@
+# Indonesia Bisa
+
+> A small, free directory of Indonesia-focused tools and data, built on public and community APIs (BMKG, Indodax, Emsifa, KodePos, libur.deno.dev, EQuran.id). Part of UwU Apps.
+
+Indonesia Bisa is an independent project and is not affiliated with any government agency or data provider it links to. Each page proxies a single public API through a small serverless function that adds validation, caching and rate limiting, then renders the result.
+
+## Pages
+
+- [Home](https://indonesia.uwuapps.org/): Searchable directory of every page on this site.
+- [Weather Forecast](https://indonesia.uwuapps.org/weather): Village-level Indonesia weather forecasts from BMKG's public API, looked up by adm4 area code.
+- [Earthquake & Tsunami Watch](https://indonesia.uwuapps.org/quake): Latest felt earthquake plus recent M5.0+ quakes and tsunami potential, from BMKG's real-time TEWS feed.
+- [Crypto Ticker (IDR)](https://indonesia.uwuapps.org/crypto): Live rupiah-denominated crypto prices from Indodax's public ticker API.
+- [Wilayah Indonesia](https://indonesia.uwuapps.org/emsifa): Cascading province, regency, district and village picker with official area codes, from the Emsifa community API.
+- [Postal Code Lookup](https://indonesia.uwuapps.org/kodepos): Search Indonesian postal codes by code or place name, with coordinates and timezone.
+- [Public Holidays](https://indonesia.uwuapps.org/holidays): Indonesia's national holidays and cuti bersama for any year.
+- [Quran](https://indonesia.uwuapps.org/quran): All 114 surah with Indonesian translation, transliteration and recitation audio, from EQuran.id.
+
+## Notes
+
+- All data-bearing pages handle upstream downtime, empty responses, schema drift and rate limits, and fall back to the last cached response when the source API is unreachable.
+- This site is a Progressive Web App; once visited, its pages and previously-fetched API data continue to work offline.

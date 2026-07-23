@@ -14,32 +14,26 @@
 
         gtag('config', 'G-FMCYFTFPEL');
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9715826188316382"
-        crossorigin="anonymous"></script>
 
     <link rel="manifest" href="/manifest.json" />
 
     <meta charset="utf-8">
-    <title>Indonesia Bisa | UwU Apps</title>
+    <title>Wilayah Indonesia | Indonesia Bisa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Can is can, but in Indonesia! A directory of small, free Indonesia-focused tools.">
+    <meta name="description" content="Browse Indonesia's provinces, regencies, districts and villages, and get the matching BMKG-style area code.">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Indonesia Bisa | UwU Apps" />
+    <meta property="og:title" content="Wilayah Indonesia | Indonesia Bisa" />
     <meta property="og:site_name" content="UwU Apps" />
-    <meta property="og:description" content="Can is can, but in Indonesia!" />
+    <meta property="og:description" content="Browse Indonesia's administrative regions down to the village level." />
 
     <link rel="stylesheet" href="/css/theme.css">
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/emsifa.css">
     <meta name="theme-color" content="#ccffcc" />
 
-    <!-- Embed Image -->
     <link rel="apple-touch-icon" href="/IDB-main.png">
     <link rel="icon" href="/favicon.ico">
     <link rel="shortcut icon" href="/favicon.ico">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:image:src" content="/IDB-main.png">
-    <meta property="og:image" content="/IDB-main.png" />
 </head>
 
 <body>
@@ -62,30 +56,50 @@
     </header>
 
     <main>
-        <section class="hero">
-            <h1>Indonesia Bisa</h1>
-            <p>A small directory of free, Indonesia-focused tools and data.</p>
-        </section>
-
-        <div class="search-wrap glass">
-            <span id="icon-search"></span>
-            <input type="search" id="page-search" placeholder="Search pages…" aria-label="Search pages"
-                autocomplete="off">
+        <div class="page-head">
+            <h1><span id="icon-layers"></span> Wilayah Indonesia</h1>
+            <p>Cascading provinsi &rarr; kabupaten/kota &rarr; kecamatan &rarr; kelurahan/desa picker, with official BPS-style codes.</p>
         </div>
 
-        <div class="page-grid" id="page-grid"></div>
-
-        <div class="no-results" id="no-results">
-            <span id="icon-inbox"></span>
-            <p>No pages match your search.</p>
+        <div class="banner error" id="error-banner" role="alert">
+            <span id="icon-alert"></span>
+            <span id="error-text"></span>
+            <button type="button" class="btn" id="retry-btn"><span id="icon-refresh"></span> Retry</button>
         </div>
+
+        <div class="picker-card glass">
+            <div class="picker-row">
+                <label for="sel-province"><span id="icon-p1"></span> Provinsi</label>
+                <select id="sel-province"><option value="">Loading provinces…</option></select>
+            </div>
+            <div class="picker-row">
+                <label for="sel-regency"><span id="icon-p2"></span> Kabupaten / Kota</label>
+                <select id="sel-regency" disabled><option value="">Select a province first</option></select>
+            </div>
+            <div class="picker-row">
+                <label for="sel-district"><span id="icon-p3"></span> Kecamatan</label>
+                <select id="sel-district" disabled><option value="">Select a regency first</option></select>
+            </div>
+            <div class="picker-row">
+                <label for="sel-village"><span id="icon-p4"></span> Kelurahan / Desa</label>
+                <select id="sel-village" disabled><option value="">Select a district first</option></select>
+            </div>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+            <span id="icon-empty"></span>
+            <p>No regions found for this selection.</p>
+        </div>
+
+        <section class="result-card glass" id="result-card"></section>
     </main>
 
     <footer class="footer">
-        Indonesia Bisa is an independent project, not affiliated with BMKG or the Indonesian government.
+        Region data courtesy of the
+        <a href="https://github.com/emsifa/api-wilayah-indonesia" target="_blank" rel="noopener noreferrer">Emsifa API Wilayah Indonesia</a>
+        community project. Indonesia Bisa is an independent project.
     </footer>
 
-    <!-- Theme picker modal -->
     <div class="modal-overlay" id="theme-modal" hidden role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
         <div class="modal glass">
             <div class="modal-head">
@@ -100,7 +114,7 @@
 
     <script src="/js/icons.js"></script>
     <script src="/js/theme.js"></script>
-    <script src="/js/index.js"></script>
+    <script src="/js/emsifa.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FMCYFTFPEL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-FMCYFTFPEL');
+    </script>
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <meta charset="utf-8">
+    <title>Quran | Indonesia Bisa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Read the Quran with Indonesian translation, transliteration and audio, powered by EQuran.id.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Quran | Indonesia Bisa" />
+    <meta property="og:site_name" content="UwU Apps" />
+    <meta property="og:description" content="Read the Quran with Indonesian translation, transliteration and audio." />
+
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/quran.css">
+    <meta name="theme-color" content="#ccffcc" />
+
+    <link rel="apple-touch-icon" href="/IDB-main.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.ico">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="/">
+            <img src="/IDB-192.png" alt="" width="32" height="32">
+            <span>Indonesia Bisa</span>
+        </a>
+        <div class="header-actions">
+            <a class="icon-btn coffee-btn" href="https://donate.stripe.com/28o2akeAr3hv0DK6oo" target="_blank"
+                rel="noopener noreferrer" aria-label="Buy Augy a coffee (opens in a new tab)">
+                <span id="icon-coffee"></span>
+                <span>Buy Augy a coffee</span>
+            </a>
+            <button type="button" id="theme-toggle" class="icon-btn square" aria-haspopup="dialog"
+                aria-label="Choose theme">
+                <span id="icon-palette"></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-head">
+            <h1><span id="icon-quran"></span> Quran</h1>
+            <p>All 114 surah, with Indonesian translation, transliteration and recitation audio.</p>
+        </div>
+
+        <div class="banner error" id="error-banner" role="alert">
+            <span id="icon-alert"></span>
+            <span id="error-text"></span>
+            <button type="button" class="btn" id="retry-btn"><span id="icon-refresh"></span> Retry</button>
+        </div>
+
+        <section id="list-view">
+            <div class="search-wrap glass">
+                <span id="icon-search"></span>
+                <input type="search" id="surah-search" placeholder="Search surah by name or number…"
+                    aria-label="Search surah" autocomplete="off">
+            </div>
+
+            <div class="skeleton glass" id="list-skeleton">
+                <div class="skel-bar" style="width:40%"></div>
+                <div class="skel-bar" style="width:70%"></div>
+                <div class="skel-bar" style="width:55%"></div>
+            </div>
+
+            <div class="empty-state" id="list-empty">
+                <span id="icon-empty"></span>
+                <p>No surah match your search.</p>
+            </div>
+
+            <div class="surah-grid" id="surah-grid"></div>
+        </section>
+
+        <section class="detail-view" id="detail-view">
+            <div class="back-row">
+                <button type="button" class="btn" id="back-btn"><span id="icon-back"></span> All surah</button>
+            </div>
+
+            <div class="skeleton glass" id="detail-skeleton" style="display:none">
+                <div class="skel-bar" style="width:40%"></div>
+                <div class="skel-bar" style="width:70%"></div>
+                <div class="skel-bar" style="width:55%"></div>
+            </div>
+
+            <div id="surah-header"></div>
+            <div class="ayat-list" id="ayat-list"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        Quran text, translation and audio courtesy of
+        <a href="https://equran.id/" target="_blank" rel="noopener noreferrer">EQuran.id</a>.
+        Indonesia Bisa is an independent project.
+    </footer>
+
+    <div class="modal-overlay" id="theme-modal" hidden role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
+        <div class="modal glass">
+            <div class="modal-head">
+                <h2 id="theme-modal-title">Choose a theme</h2>
+                <button type="button" id="theme-modal-close" class="icon-btn square" aria-label="Close">
+                    <span id="icon-close"></span>
+                </button>
+            </div>
+            <div class="theme-grid" id="theme-grid"></div>
+        </div>
+    </div>
+
+    <script src="/js/icons.js"></script>
+    <script src="/js/theme.js"></script>
+    <script src="/js/quran.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+</body>
+
+</html>
