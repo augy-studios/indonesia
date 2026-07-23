@@ -7,7 +7,6 @@ const PAGES = [
     href: "/weather",
     icon: "cloudSun",
     tags: "weather cuaca forecast bmkg rain temperature hujan",
-    status: "live",
   },
   {
     title: "Earthquake & Tsunami Watch",
@@ -15,7 +14,6 @@ const PAGES = [
     href: "/quake",
     icon: "activity",
     tags: "earthquake gempa tsunami seismic bmkg magnitude",
-    status: "live",
   },
   {
     title: "Crypto Ticker (IDR)",
@@ -23,7 +21,6 @@ const PAGES = [
     href: "/crypto",
     icon: "coin",
     tags: "crypto bitcoin btc eth indodax price idr ticker",
-    status: "live",
   },
   {
     title: "Wilayah Indonesia",
@@ -31,7 +28,6 @@ const PAGES = [
     href: "/emsifa",
     icon: "layers",
     tags: "wilayah region province regency district village kode",
-    status: "live",
   },
   {
     title: "Postal Code Lookup",
@@ -39,7 +35,6 @@ const PAGES = [
     href: "/kodepos",
     icon: "mail",
     tags: "postal code pos kodepos zip address",
-    status: "live",
   },
   {
     title: "Public Holidays",
@@ -47,7 +42,6 @@ const PAGES = [
     href: "/holidays",
     icon: "calendar",
     tags: "holiday libur cuti bersama calendar",
-    status: "live",
   },
   {
     title: "Quran",
@@ -55,23 +49,6 @@ const PAGES = [
     href: "/quran",
     icon: "book",
     tags: "quran koran surah ayat islam tafsir equran",
-    status: "live",
-  },
-  {
-    title: "Air Quality",
-    desc: "Air quality index by city, so you know when to mask up.",
-    href: "#",
-    icon: "wind",
-    tags: "air quality aqi pollution udara",
-    status: "soon",
-  },
-  {
-    title: "Prayer Times",
-    desc: "Daily jadwal sholat for cities across the archipelago.",
-    href: "#",
-    icon: "clock",
-    tags: "prayer times sholat jadwal islam",
-    status: "soon",
   },
 ];
 
@@ -90,25 +67,14 @@ function mountHeaderIcons() {
 }
 
 function cardMarkup(page) {
-  const isLive = page.status === "live";
-  const statusBadge = isLive
-    ? `<span class="badge live">${icon("check")} Live</span>`
-    : `<span class="badge">${icon("lock")} Coming soon</span>`;
-
-  const inner = `
-    <div class="card-icon">${icon(page.icon)}</div>
-    <h3>${page.title}</h3>
-    <p>${page.desc}</p>
-    <div class="card-foot">
-      ${statusBadge}
-      ${isLive ? icon("arrowRight") : ""}
-    </div>
+  return `
+    <a class="page-card glass" href="${page.href}" data-tags="${page.title.toLowerCase()} ${page.tags}">
+      <div class="card-icon">${icon(page.icon)}</div>
+      <h3>${page.title}</h3>
+      <p>${page.desc}</p>
+      <div class="card-foot">${icon("arrowRight")}</div>
+    </a>
   `;
-
-  if (isLive) {
-    return `<a class="page-card glass" href="${page.href}" data-tags="${page.title.toLowerCase()} ${page.tags}">${inner}</a>`;
-  }
-  return `<div class="page-card glass disabled" data-tags="${page.title.toLowerCase()} ${page.tags}" aria-disabled="true">${inner}</div>`;
 }
 
 function renderGrid(filter) {

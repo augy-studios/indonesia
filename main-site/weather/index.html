@@ -46,7 +46,7 @@
             <a class="icon-btn coffee-btn" href="https://donate.stripe.com/28o2akeAr3hv0DK6oo" target="_blank"
                 rel="noopener noreferrer" aria-label="Buy Augy a coffee (opens in a new tab)">
                 <span id="icon-coffee"></span>
-                <span>Buy Augy a coffee</span>
+                <span class="btn-label">Buy Augy a coffee</span>
             </a>
             <button type="button" id="theme-toggle" class="icon-btn square" aria-haspopup="dialog"
                 aria-label="Choose theme">
@@ -56,6 +56,8 @@
     </header>
 
     <main>
+        <a class="back-home" href="/"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg> Back to Directory</a>
+
         <div class="page-head">
             <h1><span id="icon-cloud"></span> Weather Forecast</h1>
             <p>Live forecasts from BMKG, down to the village (kelurahan/desa) level.</p>
@@ -73,8 +75,7 @@
         <div class="preset-row">
             <button type="button" class="preset-btn" data-adm4="31.71.03.1001" aria-pressed="true">Jakarta Pusat
                 (Kemayoran)</button>
-            <a class="helper-link" href="https://data.bmkg.go.id/prakiraan-cuaca/" target="_blank"
-                rel="noopener noreferrer">
+            <a class="helper-link" href="https://indonesia.uwuapps.org/emsifa">
                 <span id="icon-external"></span> Find your area's adm4 code
             </a>
         </div>
@@ -91,9 +92,8 @@
         </div>
 
         <div class="skeleton glass" id="skeleton">
-            <div class="skel-bar" style="width:40%"></div>
-            <div class="skel-bar" style="width:70%"></div>
-            <div class="skel-bar" style="width:55%"></div>
+            <div class="spinner"></div>
+            <span>Loading forecast&hellip;</span>
         </div>
 
         <div class="empty-state" id="empty-state">
@@ -111,7 +111,7 @@
         Indonesia Bisa is an independent project and is not affiliated with BMKG.
     </footer>
 
-    <div class="modal-overlay" id="theme-modal" hidden role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
+    <div class="modal-overlay" id="theme-modal" role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
         <div class="modal glass">
             <div class="modal-head">
                 <h2 id="theme-modal-title">Choose a theme</h2>

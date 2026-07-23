@@ -234,10 +234,16 @@ main {
   justify-content: center;
   padding: 20px;
   background: rgba(16, 36, 26, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
 }
 
-.modal-overlay[hidden] {
-  display: none;
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .modal {
@@ -247,6 +253,12 @@ main {
   background: color-mix(in srgb, var(--card-solid) 88%, transparent);
   backdrop-filter: blur(var(--blur));
   -webkit-backdrop-filter: blur(var(--blur));
+  transform: scale(0.96) translateY(6px);
+  transition: transform 0.18s ease;
+}
+
+.modal-overlay.show .modal {
+  transform: scale(1) translateY(0);
 }
 
 .modal-head {
@@ -297,6 +309,55 @@ main {
   flex: none;
 }
 
+/* ---------- back-to-directory link ---------- */
+
+.back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.back-home:hover {
+  color: var(--ink);
+}
+
+/* ---------- loading spinner ---------- */
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid rgba(16, 36, 26, 0.15);
+  border-top-color: var(--brand-ink);
+  animation: idb-spin 0.7s linear infinite;
+}
+
+@keyframes idb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner.sm {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
 /* ---------- misc ---------- */
 
 .visually-hidden {
@@ -313,4 +374,73 @@ main {
   color: var(--muted);
   font-size: 0.85rem;
   padding: 24px 20px 40px;
+}
+
+/* ---------- entrance transitions ---------- */
+/* Elements that a page script reveals via .show (banners, result cards,
+   empty states) fade and settle in instead of popping in abruptly. Exit is
+   instant (display: none has no transition target), which is an acceptable
+   trade-off for not having to touch every page script's show/hide logic. */
+
+.banner.show,
+.current-card.show,
+.ticker-card.show,
+.latest-card.show,
+.result-card.show,
+.empty-state.show {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+@starting-style {
+
+  .banner.show,
+  .current-card.show,
+  .ticker-card.show,
+  .latest-card.show,
+  .result-card.show,
+  .empty-state.show {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 640px) {
+  .site-header {
+    padding: 12px 14px;
+  }
+
+  .brand {
+    font-size: 1.1rem;
+  }
+
+  main {
+    padding: 20px 14px 48px;
+  }
+
+  .modal {
+    padding: 18px;
+  }
+
+  .theme-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .coffee-btn {
+    width: 42px;
+    padding: 0;
+  }
+
+  .coffee-btn .btn-label {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand span {
+    display: none;
+  }
 }

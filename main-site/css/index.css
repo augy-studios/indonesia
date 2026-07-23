@@ -98,29 +98,8 @@ a.page-card:hover {
 .page-card .card-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 0.78rem;
+  justify-content: flex-end;
   color: var(--muted);
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  background: rgba(16, 36, 26, 0.08);
-}
-
-.badge.live {
-  background: color-mix(in srgb, var(--brand) 55%, #ffffff);
-  color: var(--brand-ink);
-}
-
-.page-card.disabled {
-  cursor: default;
-  opacity: 0.62;
 }
 
 .no-results {

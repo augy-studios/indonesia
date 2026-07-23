@@ -186,12 +186,16 @@ async function onDistrictChange() {
 async function loadProvinces() {
   setError(false);
   const province = document.getElementById("sel-province");
+  const spinner = document.getElementById("province-spinner");
+  spinner.style.display = "inline-block";
   try {
     const data = await fetchLevel("provinces");
     fillSelect(province, data.map((d) => ({ id: d.id, name: d.name })), "Select a provinsi");
   } catch (err) {
     setError(true, err.message || "Couldn't load provinces.");
     resetSelect(province, "Failed to load");
+  } finally {
+    spinner.style.display = "none";
   }
 }
 

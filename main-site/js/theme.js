@@ -57,13 +57,13 @@ function initThemePicker() {
   applyTheme(getStoredTheme());
 
   function open() {
-    overlay.hidden = false;
+    overlay.classList.add("show");
     const active = grid.querySelector('[aria-pressed="true"]');
     (active || closeBtn).focus();
   }
 
   function close() {
-    overlay.hidden = true;
+    overlay.classList.remove("show");
     openBtn.focus();
   }
 
@@ -75,7 +75,7 @@ function initThemePicker() {
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !overlay.hidden) close();
+    if (e.key === "Escape" && overlay.classList.contains("show")) close();
   });
 
   grid.addEventListener("click", (e) => {
