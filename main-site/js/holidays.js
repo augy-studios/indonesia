@@ -4,6 +4,7 @@ const CACHE_PREFIX = "idb-holidays-cache-";
 const CLIENT_CACHE_MS = 24 * 60 * 60 * 1000;
 const MIN_YEAR = 2018;
 const MAX_YEAR = new Date().getFullYear() + 2;
+const DEFAULT_EMPTY_TEXT = "No holiday data is available for this year yet.";
 
 let currentYear = new Date().getFullYear();
 
@@ -91,6 +92,7 @@ async function loadYear(year, { silent } = {}) {
   document.getElementById("year-label").textContent = year;
   setBanner("error-banner", false);
   setBanner("stale-banner", false);
+  document.querySelector("#empty-state p").textContent = DEFAULT_EMPTY_TEXT;
 
   const cached = readCache(year);
   const cacheFresh = cached && Date.now() - cached.ts < CLIENT_CACHE_MS;
@@ -108,7 +110,9 @@ async function loadYear(year, { silent } = {}) {
     const body = await res.json().catch(() => null);
 
     if (!res.ok || !body || body.success === false) {
-      throw new Error((typeof body?.error === "string" ? body.error : null) || `Request failed (${res.status})`);
+      const err = new Error((typeof body?.error === "string" ? body.error : null) || `Request failed (${res.status})`);
+      err.noCoverage = body?.noCoverage === true;
+      throw err;
     }
 
     writeCache(year, body);
@@ -117,6 +121,11 @@ async function loadYear(year, { silent } = {}) {
     if (cached) {
       renderList(cached.payload.data);
       setBanner("stale-banner", true);
+    } else if (err.noCoverage) {
+      // A year outside the upstream's published range isn't an error -
+      // just nothing to show yet.
+      renderList([]);
+      document.querySelector("#empty-state p").textContent = err.message;
     } else {
       setBanner("error-banner", true);
       document.getElementById("error-text").textContent = err.message || "Couldn't load holidays.";

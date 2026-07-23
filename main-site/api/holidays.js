@@ -78,6 +78,19 @@ module.exports = async (req, res) => {
         res.end(cached.body);
         return;
       }
+      if (upstream.status === 404 || upstream.status === 422) {
+        // The upstream hasn't published a calendar for this year (yet) -
+        // a valid year number can still legitimately have no data.
+        res.statusCode = 404;
+        res.end(
+          JSON.stringify({
+            success: false,
+            noCoverage: true,
+            error: `No holiday calendar has been published for ${year} yet.`,
+          })
+        );
+        return;
+      }
       res.statusCode = 502;
       res.end(JSON.stringify({ success: false, error: `Upstream responded with status ${upstream.status}.` }));
       return;

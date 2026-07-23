@@ -1,8 +1,10 @@
 // Serverless proxy for the EQuran.id community Quran API.
-// Two shapes: the 114-surah index, and a single surah with its ayat.
-// Content is static, so we cache hard and lean on stale data on failure.
+// Three shapes: the 114-surah index, a single surah with its ayat, and a
+// single surah's tafsir. Content is static, so we cache hard and lean on
+// stale data on failure.
 
-const BASE = "https://equran.id/api/v2/surat";
+const SURAT_BASE = "https://equran.id/api/v2/surat";
+const TAFSIR_BASE = "https://equran.id/api/v2/tafsir";
 const SURAT_RE = /^([1-9]|[1-9][0-9]|1[01][0-9])$/; // 1-114
 
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
@@ -46,14 +48,20 @@ module.exports = async (req, res) => {
 
   const nomor = typeof req.query.nomor === "string" ? req.query.nomor.trim() : "";
   const isList = nomor === "";
+  const wantsTafsir = req.query.tafsir === "1";
 
   if (!isList && !SURAT_RE.test(nomor)) {
     res.statusCode = 400;
     res.end(JSON.stringify({ success: false, error: "Invalid surah number (expected 1-114)." }));
     return;
   }
+  if (isList && wantsTafsir) {
+    res.statusCode = 400;
+    res.end(JSON.stringify({ success: false, error: "A surah number is required for tafsir." }));
+    return;
+  }
 
-  const key = isList ? "list" : `surat:${nomor}`;
+  const key = isList ? "list" : wantsTafsir ? `tafsir:${nomor}` : `surat:${nomor}`;
 
   const ip = getClientIp(req);
   if (isRateLimited(ip)) {
@@ -73,7 +81,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const url = isList ? BASE : `${BASE}/${nomor}`;
+    const url = isList ? SURAT_BASE : wantsTafsir ? `${TAFSIR_BASE}/${nomor}` : `${SURAT_BASE}/${nomor}`;
     const upstream = await fetchWithTimeout(url, FETCH_TIMEOUT_MS);
 
     if (!upstream.ok) {
@@ -96,7 +104,11 @@ module.exports = async (req, res) => {
     }
 
     const data = json && typeof json === "object" ? json.data : null;
-    const valid = isList ? Array.isArray(data) && data.length > 0 : data && typeof data === "object" && Array.isArray(data.ayat);
+    const valid = isList
+      ? Array.isArray(data) && data.length > 0
+      : wantsTafsir
+      ? data && typeof data === "object" && Array.isArray(data.tafsir)
+      : data && typeof data === "object" && Array.isArray(data.ayat);
 
     if (!valid) {
       if (cached) {

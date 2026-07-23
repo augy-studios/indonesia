@@ -205,6 +205,56 @@
   gap: 5px;
 }
 
+.full-player {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.full-player .btn {
+  flex: none;
+}
+
+.seek-track {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.seek-seg {
+  flex: 1;
+  min-width: 2px;
+  border-radius: 2px;
+  background: rgba(16, 36, 26, 0.12);
+  transition: background 0.15s ease;
+}
+
+.seek-seg:hover {
+  background: rgba(16, 36, 26, 0.25);
+}
+
+.seek-seg.played {
+  background: color-mix(in srgb, var(--brand) 65%, #ffffff);
+}
+
+.seek-seg.current {
+  background: var(--brand-ink);
+}
+
+.seek-label {
+  flex: none;
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .ayat-list {
   display: flex;
   flex-direction: column;
@@ -213,6 +263,10 @@
 
 .ayat-card {
   padding: 18px;
+}
+
+.ayat-card.playing {
+  box-shadow: var(--shadow), 0 0 0 2px color-mix(in srgb, var(--brand) 60%, transparent);
 }
 
 .ayat-top {
@@ -234,7 +288,13 @@
   font-size: 0.8rem;
 }
 
-.play-btn {
+.ayat-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ayat-icon-btn {
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -245,8 +305,24 @@
   justify-content: center;
 }
 
-.play-btn:hover {
+.ayat-icon-btn:hover {
   background: rgba(255, 255, 255, 0.9);
+}
+
+.ayat-icon-btn.active {
+  background: color-mix(in srgb, var(--brand) 65%, #ffffff);
+  border-color: color-mix(in srgb, var(--brand) 40%, #ffffff);
+}
+
+.tafsir-panel {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .ayat-arab {
