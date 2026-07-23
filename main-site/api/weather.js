@@ -94,6 +94,19 @@ module.exports = async (req, res) => {
         res.end(cached.body);
         return;
       }
+      if (upstream.status === 404) {
+        // BMKG's village-level coverage doesn't include every desa/kelurahan -
+        // a well-formed adm4 code can still legitimately have no forecast.
+        res.statusCode = 404;
+        res.end(
+          JSON.stringify({
+            success: false,
+            noCoverage: true,
+            error: "BMKG doesn't publish a forecast for this adm4 code.",
+          })
+        );
+        return;
+      }
       res.statusCode = 502;
       res.end(JSON.stringify({ success: false, error: `BMKG responded with status ${upstream.status}.` }));
       return;

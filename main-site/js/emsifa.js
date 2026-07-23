@@ -108,6 +108,7 @@ function renderResult() {
       <a class="btn" href="/weather?adm4=${adm4}">${icon("cloudSun")} Use in Weather</a>` : ""}
     </div>
     <p class="code-hint">Village id from the Emsifa dataset${adm4 ? `; formatted as a dotted adm4 code (${adm4}) for use with BMKG's weather API.` : "."}</p>
+    ${adm4 ? `<p class="code-hint">${icon("alertTriangle")} BMKG's forecast coverage doesn't include every desa/kelurahan - this code may not have a published forecast.</p>` : ""}
   `;
   card.classList.add("show");
 

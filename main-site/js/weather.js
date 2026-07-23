@@ -3,6 +3,7 @@
 
 const ADM4_RE = /^\d{2}\.\d{2}\.\d{2}\.\d{4}$/;
 const DEFAULT_ADM4 = "31.71.03.1001";
+const DEFAULT_EMPTY_TEXT = "No forecast data is available for this area right now. Try another adm4 code.";
 const LAST_ADM4_KEY = "idb-weather-last-adm4";
 const CACHE_PREFIX = "idb-weather-cache-";
 const CLIENT_CACHE_MS = 10 * 60 * 1000;
@@ -179,6 +180,7 @@ async function loadForecast(adm4, { silent } = {}) {
   setBanner("error-banner", false);
   setBanner("stale-banner", false);
   document.getElementById("empty-state").classList.remove("show");
+  document.querySelector("#empty-state p").textContent = DEFAULT_EMPTY_TEXT;
   document.getElementById("current-card").classList.remove("show");
   document.getElementById("forecast-days").innerHTML = "";
 
@@ -198,7 +200,9 @@ async function loadForecast(adm4, { silent } = {}) {
     const body = await res.json().catch(() => null);
 
     if (!res.ok || !body || body.success === false) {
-      throw new Error((typeof body?.error === "string" ? body.error : null) || `Request failed (${res.status})`);
+      const err = new Error((typeof body?.error === "string" ? body.error : null) || `Request failed (${res.status})`);
+      err.noCoverage = body?.noCoverage === true;
+      throw err;
     }
 
     writeCache(adm4, body);
@@ -207,6 +211,12 @@ async function loadForecast(adm4, { silent } = {}) {
     if (cached) {
       renderFromPayload(cached.payload);
       setBanner("stale-banner", true);
+    } else if (err.noCoverage) {
+      // A well-formed adm4 code with no data isn't an error condition -
+      // BMKG simply doesn't publish a forecast for every desa/kelurahan.
+      document.getElementById("empty-state").classList.add("show");
+      document.querySelector("#empty-state p").textContent =
+        "BMKG doesn't publish a forecast for this adm4 code. Village-level coverage doesn't include every desa/kelurahan - try a nearby area, or the Jakarta Pusat preset above.";
     } else {
       setBanner("error-banner", true, err.message || "Couldn't load the forecast.");
       document.getElementById("empty-state").classList.add("show");
