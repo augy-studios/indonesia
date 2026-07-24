@@ -17,13 +17,15 @@
 
 .controls {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 16px;
   margin-bottom: 20px;
 }
 
 .controls input {
-  flex: 1;
+  flex: 1 1 200px;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
@@ -34,6 +36,10 @@
 
 .controls input:focus {
   outline: 2px solid color-mix(in srgb, var(--brand) 70%, #000);
+}
+
+.controls .btn {
+  flex-shrink: 0;
 }
 
 .btn {
