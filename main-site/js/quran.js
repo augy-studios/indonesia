@@ -272,8 +272,6 @@ async function shareAyat(btn, a) {
 function mountIcons() {
   const map = {
     "icon-coffee": "coffee",
-    "icon-palette": "palette",
-    "icon-close": "close",
     "icon-quran": "book",
     "icon-search": "search",
     "icon-alert": "alertTriangle",

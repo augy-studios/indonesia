@@ -29,6 +29,21 @@
     <meta property="og:site_name" content="UwU Apps" />
     <meta property="og:description" content="Can is can, but in Indonesia! A directory of small, free Indonesia-focused tools." />
 
+    <script>
+        (function () {
+            try {
+                var k = "idb";
+                var m = localStorage.getItem(k + ".mode") || "light";
+                var c = localStorage.getItem(k + ".colorTheme") || "classic";
+                document.documentElement.setAttribute("data-mode", m);
+                document.documentElement.setAttribute("data-color-theme", c);
+            } catch (e) {
+                document.documentElement.setAttribute("data-mode", "light");
+                document.documentElement.setAttribute("data-color-theme", "classic");
+            }
+        })();
+    </script>
+
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="404.css" />
     <meta name="theme-color" content="#ccffcc" />

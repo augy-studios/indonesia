@@ -34,16 +34,16 @@
 .controls input {
   flex: 1 1 200px;
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--surface-strong);
   font-size: 0.9rem;
   color: var(--ink);
 }
 
 .controls input:focus {
-  outline: 2px solid color-mix(in srgb, var(--brand) 70%, #000);
+  outline: 2px solid var(--brand-ink);
 }
 
 .controls form .btn {
@@ -56,14 +56,14 @@
   gap: 6px;
   padding: 10px 16px;
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--brand) 65%, #ffffff);
-  color: var(--brand-ink);
+  background: color-mix(in srgb, var(--brand) 65%, var(--surface-strong));
+  color: var(--on-brand);
   font-size: 0.9rem;
-  border: 1px solid color-mix(in srgb, var(--brand) 40%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--brand) 40%, var(--surface-border));
 }
 
 .btn:hover {
-  background: color-mix(in srgb, var(--brand) 85%, #ffffff);
+  background: color-mix(in srgb, var(--brand) 85%, var(--surface-strong));
 }
 
 .preset-row {
@@ -76,19 +76,20 @@
 .preset-btn {
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-strong);
   font-size: 0.82rem;
   color: var(--ink);
 }
 
 .preset-btn:hover {
-  background: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--surface-strong) 90%, var(--ink));
 }
 
 .preset-btn[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--brand) 65%, #ffffff);
-  border-color: color-mix(in srgb, var(--brand) 40%, #ffffff);
+  background: color-mix(in srgb, var(--brand) 65%, var(--surface-strong));
+  border-color: color-mix(in srgb, var(--brand) 40%, var(--surface-border));
+  color: var(--on-brand);
 }
 
 .helper-link {
@@ -114,12 +115,12 @@
 }
 
 .banner.error {
-  background: rgba(185, 28, 28, 0.12);
-  color: var(--busy);
+  background: color-mix(in srgb, var(--error) 14%, transparent);
+  color: var(--error);
 }
 
 .banner.warn {
-  background: rgba(180, 83, 9, 0.12);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
   color: var(--warn);
 }
 
@@ -187,8 +188,8 @@
   width: 60px;
   height: 60px;
   border-radius: 16px;
-  background: color-mix(in srgb, var(--brand) 55%, #ffffff);
-  color: var(--brand-ink);
+  background: color-mix(in srgb, var(--brand) 55%, var(--surface-strong));
+  color: var(--on-brand);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -11,8 +11,6 @@ const CLIENT_CACHE_MS = 10 * 60 * 1000;
 function mountIcons() {
   const map = {
     "icon-coffee": "coffee",
-    "icon-palette": "palette",
-    "icon-close": "close",
     "icon-cloud": "cloudSun",
     "icon-search": "search",
     "icon-refresh": "refresh",

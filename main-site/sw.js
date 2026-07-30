@@ -1,4 +1,4 @@
-const SHELL_CACHE = "idb-shell-v15";
+const SHELL_CACHE = "idb-shell-v16";
 const API_CACHE = "idb-api-v3";
 const CACHES = [SHELL_CACHE, API_CACHE];
 
@@ -29,6 +29,7 @@ const SHELL_ASSETS = [
   "/css/holidays.css",
   "/css/quran.css",
   "/js/icons.js",
+  "/js/ui.js",
   "/js/theme.js",
   "/js/index.js",
   "/js/weather.js",

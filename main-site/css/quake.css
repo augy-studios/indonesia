@@ -36,12 +36,12 @@
 }
 
 .banner.error {
-  background: rgba(185, 28, 28, 0.12);
-  color: var(--busy);
+  background: color-mix(in srgb, var(--error) 14%, transparent);
+  color: var(--error);
 }
 
 .banner.warn {
-  background: rgba(180, 83, 9, 0.12);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
   color: var(--warn);
 }
 
@@ -59,14 +59,14 @@
   gap: 6px;
   padding: 10px 16px;
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--brand) 65%, #ffffff);
-  color: var(--brand-ink);
+  background: color-mix(in srgb, var(--brand) 65%, var(--surface-strong));
+  color: var(--on-brand);
   font-size: 0.9rem;
-  border: 1px solid color-mix(in srgb, var(--brand) 40%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--brand) 40%, var(--surface-border));
 }
 
 .btn:hover {
-  background: color-mix(in srgb, var(--brand) 85%, #ffffff);
+  background: color-mix(in srgb, var(--brand) 85%, var(--surface-strong));
 }
 
 .skeleton {
@@ -118,18 +118,18 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  background: rgba(21, 128, 61, 0.15);
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
   color: var(--ok);
 }
 
 .mag-badge.warn {
-  background: rgba(180, 83, 9, 0.15);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
   color: var(--warn);
 }
 
-.mag-badge.busy {
-  background: rgba(185, 28, 28, 0.15);
-  color: var(--busy);
+.mag-badge.error {
+  background: color-mix(in srgb, var(--error) 14%, transparent);
+  color: var(--error);
 }
 
 .mag-badge .mag {
@@ -176,13 +176,13 @@
 }
 
 .tsunami-tag.ok {
-  background: rgba(21, 128, 61, 0.12);
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
   color: var(--ok);
 }
 
-.tsunami-tag.busy {
-  background: rgba(185, 28, 28, 0.15);
-  color: var(--busy);
+.tsunami-tag.error {
+  background: color-mix(in srgb, var(--error) 14%, transparent);
+  color: var(--error);
 }
 
 .latest-desc {

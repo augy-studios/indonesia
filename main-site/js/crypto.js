@@ -19,8 +19,6 @@ const PRESETS = [
 function mountIcons() {
   const map = {
     "icon-coffee": "coffee",
-    "icon-palette": "palette",
-    "icon-close": "close",
     "icon-crypto": "coin",
     "icon-search": "search",
     "icon-refresh": "refresh",

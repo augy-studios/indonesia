@@ -7,8 +7,6 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 function mountIcons() {
   const map = {
     "icon-coffee": "coffee",
-    "icon-palette": "palette",
-    "icon-close": "close",
     "icon-layers": "layers",
     "icon-p1": "mapPin",
     "icon-p2": "mapPin",

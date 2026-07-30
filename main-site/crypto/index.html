@@ -27,6 +27,21 @@
     <meta property="og:site_name" content="UwU Apps" />
     <meta property="og:description" content="Live rupiah-denominated crypto prices from Indodax's public ticker API." />
 
+    <script>
+        (function () {
+            try {
+                var k = "idb";
+                var m = localStorage.getItem(k + ".mode") || "light";
+                var c = localStorage.getItem(k + ".colorTheme") || "classic";
+                document.documentElement.setAttribute("data-mode", m);
+                document.documentElement.setAttribute("data-color-theme", c);
+            } catch (e) {
+                document.documentElement.setAttribute("data-mode", "light");
+                document.documentElement.setAttribute("data-color-theme", "classic");
+            }
+        })();
+    </script>
+
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="/css/crypto.css">
     <meta name="theme-color" content="#ccffcc" />
@@ -48,9 +63,9 @@
                 <span id="icon-coffee"></span>
                 <span class="btn-label">Buy Augy a coffee</span>
             </a>
-            <button type="button" id="theme-toggle" class="icon-btn square" aria-haspopup="dialog"
-                aria-label="Choose theme">
-                <span id="icon-palette"></span>
+            <button type="button" id="themeBtn" class="icon-btn square" aria-haspopup="dialog"
+                aria-label="Theme">
+                <span data-icon="sun"></span>
             </button>
         </div>
     </header>
@@ -103,19 +118,31 @@
         Indonesia Bisa is an independent project and is not affiliated with Indodax. Not financial advice.
     </footer>
 
-    <div class="modal-overlay" id="theme-modal" role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
-        <div class="modal glass">
+    <div class="modal-backdrop hidden" id="themeModal">
+        <div class="modal glass" role="dialog" aria-modal="true" aria-labelledby="themeModalTitle">
             <div class="modal-head">
-                <h2 id="theme-modal-title">Choose a theme</h2>
-                <button type="button" id="theme-modal-close" class="icon-btn square" aria-label="Close">
-                    <span id="icon-close"></span>
+                <h2 id="themeModalTitle">Theme</h2>
+                <button type="button" class="icon-btn square small" data-close-modal="themeModal"
+                    aria-label="Close">
+                    <span data-icon="close"></span>
                 </button>
             </div>
-            <div class="theme-grid" id="theme-grid"></div>
+            <p class="modal-section-label">Mode</p>
+            <div class="mode-toggle" id="modeToggle">
+                <button class="mode-btn" type="button" data-mode="light" aria-pressed="false">
+                    <span data-icon="sun"></span>Light
+                </button>
+                <button class="mode-btn" type="button" data-mode="dark" aria-pressed="false">
+                    <span data-icon="moon"></span>Dark
+                </button>
+            </div>
+            <p class="modal-section-label">Brand colour</p>
+            <div class="swatch-grid" id="swatchGrid"></div>
         </div>
     </div>
 
     <script src="/js/icons.js"></script>
+    <script src="/js/ui.js"></script>
     <script src="/js/theme.js"></script>
     <script src="/js/crypto.js"></script>
 

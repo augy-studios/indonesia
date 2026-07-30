@@ -7,8 +7,6 @@ const CLIENT_CACHE_MS = 3 * 60 * 1000;
 function mountIcons() {
   const map = {
     "icon-coffee": "coffee",
-    "icon-palette": "palette",
-    "icon-close": "close",
     "icon-activity": "activity",
     "icon-refresh": "refresh",
     "icon-refresh-2": "refresh",
@@ -25,7 +23,7 @@ function mountIcons() {
 function magSeverity(magStr) {
   const m = parseFloat(magStr);
   if (Number.isNaN(m)) return "ok";
-  if (m >= 6) return "busy";
+  if (m >= 6) return "error";
   if (m >= 5) return "warn";
   return "ok";
 }
@@ -84,7 +82,7 @@ function renderLatest(quake) {
           <span>${icon("mapPin")} ${quake.Coordinates || ""}</span>
         </div>
       </div>
-      <span class="tsunami-tag ${risk ? "busy" : "ok"}">
+      <span class="tsunami-tag ${risk ? "error" : "ok"}">
         ${icon(risk ? "waves" : "check")} ${risk ? "Tsunami potential" : "No tsunami risk"}
       </span>
     </div>

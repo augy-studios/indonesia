@@ -1,91 +1,214 @@
-/* Theme picker: persists choice in localStorage, applies data-theme on <html>. */
+/* Theme system: 7 brand colour swatches + light/dark mode.
+   Default is always light + classic (#ccffcc), regardless of OS preference.
+   Once the user picks something, it is persisted.
 
-const THEMES = [
-  { id: "classic", name: "Classic", color: "#ccffcc" },
-  { id: "notgreen-1", name: "Not Green 1", color: "#ffcccc" },
-  { id: "notgreen-2", name: "Not Green 2", color: "#ccccff" },
-  { id: "notgreen-3", name: "Not Green 3", color: "#ffffcc" },
-  { id: "notgreen-4", name: "Not Green 4", color: "#ffccff" },
-  { id: "notgreen-5", name: "Not Green 5", color: "#ccffff" },
-  { id: "lightest-green", name: "Really Really Light Green", color: "#ffffff" },
+   Plain script, not an ES module: this project loads scripts without
+   type="module", so the spec's exports are published as globals instead. */
+
+var APP_KEY = "idb";
+
+var COLOR_THEMES = [
+  { id: "classic", label: "Classic", hex: "#ccffcc" },
+  { id: "not-green-1", label: "Not green 1", hex: "#ffcccc" },
+  { id: "not-green-2", label: "Not green 2", hex: "#ccccff" },
+  { id: "not-green-3", label: "Not green 3", hex: "#ffffcc" },
+  { id: "not-green-4", label: "Not green 4", hex: "#ffccff" },
+  { id: "not-green-5", label: "Not green 5", hex: "#ccffff" },
+  { id: "really-light-green", label: "Really really light green", hex: "#ffffff" },
 ];
 
-const THEME_KEY = "idb-theme";
+var STORAGE_KEY_COLOR = APP_KEY + ".colorTheme";
+var STORAGE_KEY_MODE = APP_KEY + ".mode";
 
-function getStoredTheme() {
+/* Pre-rename key, and the swatch ids it used. */
+var LEGACY_KEY = "idb-theme";
+var LEGACY_IDS = {
+  classic: "classic",
+  "notgreen-1": "not-green-1",
+  "notgreen-2": "not-green-2",
+  "notgreen-3": "not-green-3",
+  "notgreen-4": "not-green-4",
+  "notgreen-5": "not-green-5",
+  "lightest-green": "really-light-green",
+};
+
+function readStore(key) {
   try {
-    return localStorage.getItem(THEME_KEY);
+    return localStorage.getItem(key);
   } catch {
     return null;
   }
 }
 
-function setStoredTheme(id) {
+function writeStore(key, value) {
   try {
-    localStorage.setItem(THEME_KEY, id);
+    localStorage.setItem(key, value);
   } catch {
-    /* storage unavailable (private mode etc.) - theme just won't persist */
+    /* storage unavailable (private mode etc.), theme just won't persist */
   }
 }
 
-function applyTheme(id) {
-  const valid = THEMES.some((t) => t.id === id) ? id : "classic";
-  document.documentElement.setAttribute("data-theme", valid);
-  document.querySelectorAll(".theme-option").forEach((btn) => {
-    btn.setAttribute("aria-pressed", String(btn.dataset.theme === valid));
-  });
+/* One-time move from idb-theme to the namespaced keys. */
+function migrateLegacyTheme() {
+  if (readStore(STORAGE_KEY_COLOR)) return;
+  var old = readStore(LEGACY_KEY);
+  if (!old) return;
+  if (LEGACY_IDS[old]) writeStore(STORAGE_KEY_COLOR, LEGACY_IDS[old]);
+  try {
+    localStorage.removeItem(LEGACY_KEY);
+  } catch {
+    /* nothing to do */
+  }
 }
 
-/* Apply immediately (before paint-ish) so there's no flash of wrong theme. */
-applyTheme(getStoredTheme());
+function hexToRgb(hex) {
+  var n = parseInt(hex.replace("#", ""), 16);
+  return ((n >> 16) & 255) + ", " + ((n >> 8) & 255) + ", " + (n & 255);
+}
 
-function initThemePicker() {
-  const openBtn = document.getElementById("theme-toggle");
-  const overlay = document.getElementById("theme-modal");
-  const closeBtn = document.getElementById("theme-modal-close");
-  const grid = document.getElementById("theme-grid");
-  if (!openBtn || !overlay || !grid) return;
+function getStoredColorTheme() {
+  return readStore(STORAGE_KEY_COLOR) || "classic";
+}
 
-  grid.innerHTML = THEMES.map(
-    (t) => `
-    <button type="button" class="theme-option" data-theme="${t.id}" aria-pressed="false">
-      <span class="swatch" style="background:${t.color}"></span>
-      <span>${t.name}</span>
-    </button>`
-  ).join("");
+function getStoredMode() {
+  return readStore(STORAGE_KEY_MODE) || "light";
+}
 
-  applyTheme(getStoredTheme());
+function applyColorTheme(id) {
+  var theme = COLOR_THEMES.filter(function (t) {
+    return t.id === id;
+  })[0] || COLOR_THEMES[0];
+  document.documentElement.setAttribute("data-color-theme", theme.id);
+  document.documentElement.style.setProperty("--brand", theme.hex);
+  document.documentElement.style.setProperty("--brand-rgb", hexToRgb(theme.hex));
+  writeStore(STORAGE_KEY_COLOR, theme.id);
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", theme.hex);
+  return theme;
+}
 
-  function open() {
-    overlay.classList.add("show");
-    const active = grid.querySelector('[aria-pressed="true"]');
-    (active || closeBtn).focus();
-  }
+function applyMode(mode) {
+  var resolved = mode === "dark" ? "dark" : "light";
+  document.documentElement.setAttribute("data-mode", resolved);
+  writeStore(STORAGE_KEY_MODE, resolved);
+  return resolved;
+}
 
-  function close() {
-    overlay.classList.remove("show");
-    openBtn.focus();
-  }
+function initTheme() {
+  migrateLegacyTheme();
+  applyColorTheme(getStoredColorTheme());
+  applyMode(getStoredMode());
+}
 
-  openBtn.addEventListener("click", open);
-  closeBtn.addEventListener("click", close);
+/* ---------- modal wiring ---------- */
+/* The spec puts this in app.js. This project has eight per-page scripts and
+   no app.js, so it lives here, next to the state it drives. */
 
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) close();
-  });
+function buildThemeModal() {
+  var grid = document.getElementById("swatchGrid");
+  if (!grid) return;
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && overlay.classList.contains("show")) close();
-  });
+  grid.innerHTML = COLOR_THEMES.map(function (t) {
+    return (
+      '<button class="swatch" type="button" data-theme-id="' + t.id +
+      '" style="--swatch-color:' + t.hex + '" aria-pressed="false" aria-label="' + t.label + '">' +
+      '<span class="swatch-dot"></span>' +
+      '<span class="swatch-label">' + t.label + "</span>" +
+      "</button>"
+    );
+  }).join("");
 
-  grid.addEventListener("click", (e) => {
-    const btn = e.target.closest(".theme-option");
+  syncThemeModalState();
+
+  grid.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-theme-id]");
     if (!btn) return;
-    const id = btn.dataset.theme;
-    applyTheme(id);
-    setStoredTheme(id);
-    close();
+    applyColorTheme(btn.dataset.themeId);
+    syncThemeModalState();
+  });
+
+  var toggle = document.getElementById("modeToggle");
+  if (toggle) {
+    toggle.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-mode]");
+      if (!btn) return;
+      applyMode(btn.dataset.mode);
+      syncThemeModalState();
+    });
+  }
+}
+
+function syncThemeModalState() {
+  var activeTheme = getStoredColorTheme();
+  var activeMode = getStoredMode();
+
+  document.querySelectorAll("#swatchGrid .swatch").forEach(function (el) {
+    var on = el.dataset.themeId === activeTheme;
+    el.classList.toggle("active", on);
+    el.setAttribute("aria-pressed", String(on));
+  });
+
+  document.querySelectorAll("#modeToggle .mode-btn").forEach(function (el) {
+    var on = el.dataset.mode === activeMode;
+    el.classList.toggle("active", on);
+    el.setAttribute("aria-pressed", String(on));
+  });
+
+  updateThemeButtonIcon();
+}
+
+function updateThemeButtonIcon() {
+  var btn = document.getElementById("themeBtn");
+  if (!btn) return;
+  var span = btn.querySelector("[data-icon]");
+  if (!span) return;
+  span.setAttribute("data-icon", getStoredMode() === "dark" ? "moon" : "sun");
+  hydrateIcons(btn);
+}
+
+function wireModals() {
+  document.querySelectorAll("[data-close-modal]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      closeModal(btn.dataset.closeModal);
+    });
+  });
+
+  document.querySelectorAll(".modal-backdrop").forEach(function (backdrop) {
+    backdrop.addEventListener("click", function (e) {
+      if (e.target === backdrop) closeModal(backdrop.id);
+    });
+  });
+
+  var openBtn = document.getElementById("themeBtn");
+  if (openBtn) {
+    openBtn.addEventListener("click", function () {
+      openModal("themeModal");
+      var active = document.querySelector("#swatchGrid .swatch.active");
+      if (active) active.focus();
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    var open = document.querySelector(".modal-backdrop:not(.hidden)");
+    if (!open) return;
+    closeModal(open.id);
+    if (openBtn) openBtn.focus();
   });
 }
 
-document.addEventListener("DOMContentLoaded", initThemePicker);
+/* Apply before paint so there is no flash of the wrong theme. */
+initTheme();
+
+document.addEventListener("DOMContentLoaded", function () {
+  hydrateIcons();
+  buildThemeModal();
+  wireModals();
+});
+
+window.COLOR_THEMES = COLOR_THEMES;
+window.applyColorTheme = applyColorTheme;
+window.applyMode = applyMode;
+window.getStoredColorTheme = getStoredColorTheme;
+window.getStoredMode = getStoredMode;
+window.initTheme = initTheme;

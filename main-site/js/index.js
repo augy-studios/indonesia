@@ -55,10 +55,8 @@ const PAGES = [
 function mountHeaderIcons() {
   const map = {
     "icon-coffee": "coffee",
-    "icon-palette": "palette",
     "icon-search": "search",
     "icon-inbox": "inbox",
-    "icon-close": "close",
   };
   for (const [id, name] of Object.entries(map)) {
     const el = document.getElementById(id);

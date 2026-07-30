@@ -11,8 +11,6 @@ let currentYear = new Date().getFullYear();
 function mountIcons() {
   const map = {
     "icon-coffee": "coffee",
-    "icon-palette": "palette",
-    "icon-close": "close",
     "icon-holiday": "calendar",
     "icon-prev": "chevronLeft",
     "icon-next": "chevronRight",
