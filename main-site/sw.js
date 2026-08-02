@@ -1,4 +1,4 @@
-const SHELL_CACHE = "idb-shell-v16";
+const SHELL_CACHE = "idb-shell-v17";
 const API_CACHE = "idb-api-v3";
 const CACHES = [SHELL_CACHE, API_CACHE];
 
