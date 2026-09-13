@@ -1,4 +1,7 @@
-const SHELL_CACHE = "idb-shell-v17";
+// Bump on every change to anything the worker serves. The browser compares
+// this file byte for byte; if nothing here changes, no reader is ever told a
+// new version exists.
+const SHELL_CACHE = "idb-shell-v18";
 const API_CACHE = "idb-api-v3";
 const CACHES = [SHELL_CACHE, API_CACHE];
 
@@ -31,6 +34,7 @@ const SHELL_ASSETS = [
   "/js/icons.js",
   "/js/ui.js",
   "/js/theme.js",
+  "/js/sw-update.js",
   "/js/index.js",
   "/js/weather.js",
   "/js/quake.js",
@@ -47,16 +51,21 @@ const SHELL_ASSETS = [
 ];
 
 /* -- Install: cache the app shell -- */
+/* No skipWaiting() here. A new worker downloads, installs, and then waits;
+   the only thing that promotes it is a reader pressing Reload on the update
+   bar (see js/sw-update.js and the message handler below). */
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(SHELL_CACHE)
     .then(cache => cache.addAll(SHELL_ASSETS))
-    .then(() => self.skipWaiting())
   );
 });
 
 /* -- Activate: drop old cache versions -- */
+/* No clients.claim() here either. Claiming on activation would swap the
+   worker under an open page silently, which is exactly what the bar asks
+   permission for. */
 
 self.addEventListener('activate', event => {
   event.waitUntil(
@@ -68,8 +77,18 @@ self.addEventListener('activate', event => {
         .map(k => caches.delete(k))
       )
     )
-    .then(() => self.clients.claim())
   );
+});
+
+/* -- Message: the reader accepted the update -- */
+
+self.addEventListener('message', event => {
+  const type = typeof event.data === 'string' ? event.data : event.data?.type;
+
+  // The only place either of these is ever called.
+  if (type === 'skip-waiting') {
+    event.waitUntil(self.skipWaiting().then(() => self.clients.claim()));
+  }
 });
 
 /* -- Fetch: strategy per route -- */
@@ -137,19 +156,23 @@ async function staleWhileRevalidate(request) {
 }
 
 async function cacheFirst(request) {
-  const cached = await caches.match(request);
+  // Match against this worker's own shell cache only, not every cache on the
+  // origin. While a newer worker sits waiting, its freshly filled cache also
+  // exists, and a global match could hand this worker's page assets from a
+  // version it is not running.
+  const cache = await caches.open(SHELL_CACHE);
+  const cached = await cache.match(request);
   if (cached) return cached;
 
   try {
     const response = await fetch(request);
     if (response.ok) {
-      const cache = await caches.open(SHELL_CACHE);
       cache.put(request, response.clone());
     }
     return response;
   } catch {
     if (request.mode === 'navigate') {
-      return caches.match('/index.html');
+      return cache.match('/index.html');
     }
     return new Response('Offline', { status: 503 });
   }
